@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>漫画家アシスタント・スケジュール v4</title>
+    <title>漫画家アシスタント・スケジュール v5</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,8 +14,7 @@
             --primary-color: #4a90e2;
             --danger-color: #ff3b30;
             --success-color: #34c759;
-            --bg-color: #f0f3f8; /* 少し柔らかい背景色に */
-            --card-bg: #ffffff;
+            --bg-color: #e5ebf3; /* 現場っぽい少し暗めの背景 */
             --text-color: #333333;
         }
 
@@ -24,219 +23,294 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 16px;
-            padding-top: 30px; /* 上部に少し余裕を持たせる */
-        }
-
-        /* 日付選択エリアの調整 */
-        .date-picker-card {
-            background: #ffffff;
             padding: 12px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .date-picker-card label {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #666;
-        }
-
-        input[type="date"] {
-            padding: 8px 12px;
-            border: 1px solid #e5e5ea;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background: #f9f9f9;
-        }
-
-        /* ✨ キャラクター＆吹き出し（重ね合わせレイアウト） */
-        .character-section {
-            position: relative;
-            margin-bottom: 25px;
-            padding-top: 20px; /* キャラクターがはみ出る分のスペース */
-        }
-
-        /* 吹き出しの上に重ねるキャラクターアイコン */
-        .assistant-char {
-            position: absolute;
-            top: 0;
-            left: 15px;
-            width: 64px;
-            height: 64px;
-            background-color: #ffcc00;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            z-index: 10; /* 吹き出しより前に出す */
-        }
-
-        /* 吹き出しの本体 */
-        .speech-bubble {
-            background: var(--card-bg);
-            padding: 20px 16px 16px 16px;
-            padding-top: 45px; /* キャラクターと被らないように上部に余白 */
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.03);
-        }
-
-        h1 { margin: 0; font-size: 1.15rem; font-weight: bold; letter-spacing: -0.5px; }
-        .greeting { color: #555; font-size: 0.88rem; margin-top: 6px; margin-bottom: 0; line-height: 1.4; }
-
-        /* コンテンツカード */
-        .card {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 0.95rem;
-            font-weight: bold;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* 入力フォーム */
-        .input-group {
+            padding-top: 30px;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* 📋 上部タブエリア */
+        .tab-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: #ffffff;
+            color: #333;
+            border: 2px solid #999;
+            border-radius: 6px;
+            padding: 8px 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn.active {
+            background: #444;
+            color: #fff;
+            border-color: #444;
+        }
+
+        /* 🗓️ ホワイトボードエリア */
+        .whiteboard {
+            background: #ffffff;
+            border: 12px solid #5c4033; /* 木の枠線風 */
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.15);
+            padding: 16px;
+            flex-grow: 1;
+            min-height: 250px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ホワイトボード下部の粉受け（黒板消し置き） */
+        .whiteboard::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: -12px;
+            right: -12px;
+            height: 8px;
+            background: #8b5a2b;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* ホワイトボード右上の日付 */
+        .wb-date {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            font-family: 'Courier New', Courier, monospace; /* 手書き数字風 */
+        }
+
+        .wb-content-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            margin-top: 5px;
+            color: #555;
+        }
+
+        .wb-scroll-area {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-bottom: 10px;
+        }
+
+        /* タブごとの画面の非表示設定 */
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+
+        /* 👤 下部：アシスタント＆吹き出しエリア */
+        .assistant-section {
+            display: flex;
+            align-items: flex-end;
+            margin-top: 30px; /* 粉受けとのスペース */
+            margin-bottom: 10px;
             gap: 10px;
         }
 
-        input[type="text"] {
-            padding: 12px;
-            border: 1px solid #e5e5ea;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            width: 100%;
-            box-sizing: border-box;
-            background: #fafafa;
+        /* アシスタントのイラスト（仮で枠線内にイラスト風絵文字） */
+        .assistant-avatar {
+            width: 100px;
+            height: 120px;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3.5rem;
+            position: relative;
+            background-size: cover;
+            background-position: center;
         }
 
-        button.submit-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(74, 144, 226, 0.2);
+        /* 縦長の大きな吹き出し */
+        .speech-bubble {
+            flex-grow: 1;
+            background: #ffffff;
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 12px 14px;
+            min-height: 95px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        /* タスク表示 */
+        /* 吹き出しの突起部分 */
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            bottom: 20px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #333;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            left: -8px;
+            bottom: 20px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #fff;
+        }
+
+        .bubble-title { font-size: 0.95rem; font-weight: bold; margin: 0; color: #111; }
+        .bubble-text { font-size: 0.82rem; color: #444; margin: 4px 0 0 0; line-height: 1.3; }
+
+        /* タスクアイテムの見た目（ボード上のチョーク書き風） */
         .todo-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f2f2f7;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
         }
-
-        .todo-item:last-child { border-bottom: none; }
-        .todo-title { font-weight: 600; font-size: 0.95rem; color: #222; }
-        
+        .todo-title { font-weight: bold; font-size: 0.95rem; }
         .badge {
             display: inline-block;
-            padding: 2px 8px;
+            padding: 2px 6px;
             font-size: 0.7rem;
-            border-radius: 6px;
+            border-radius: 4px;
             color: white;
-            margin-top: 4px;
-            font-weight: bold;
+            margin-top: 3px;
         }
         .badge.today { background-color: var(--primary-color); }
         .badge.delayed { background-color: var(--danger-color); }
-
         button.complete-btn {
-            background: #f2f2f7;
-            color: #48484a;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
+            background: #eee; border: 1px solid #aaa; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;
         }
+
+        /* フォーム・収入用 */
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+        .input-group button { background: var(--primary-color); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; }
+        .income-amount { font-size: 1.8rem; font-weight: bold; color: var(--success-color); }
     </style>
 </head>
 <body>
 
-    <div class="date-picker-card">
-        <label>📅 表示する日付</label>
-        <input type="date" id="calendar-select" onchange="changeDate()">
+    <div class="tab-container">
+        <button class="tab-btn active" id="tab-today" onclick="switchTab('today')">📋 今日のタスク</button>
+        <button class="tab-btn" id="tab-new" onclick="switchTab('new')">➕ 新しいタスク</button>
+        <button class="tab-btn" id="tab-income" onclick="switchTab('income')">💰 収入 (今月)</button>
     </div>
 
-    <div class="character-section">
-        <div class="assistant-char">✍️</div>
+    <div class="whiteboard">
+        <div class="wb-date">6/23</div>
+        
+        <div class="wb-scroll-area">
+            <div id="page-today" class="page-content active">
+                <div class="wb-content-title">📌 本日のスケジュール</div>
+                <div id="delayed-zone" style="display:none; margin-bottom: 10px; background: #fff0f0; padding: 8px; border-radius: 6px;">
+                    <span style="color:var(--danger-color); font-weight:bold; font-size:0.85rem;">⚠️ 遅延タスク</span>
+                    <div id="delayed-list"></div>
+                </div>
+                <div id="today-list"></div>
+            </div>
+
+            <div id="page-new" class="page-content">
+                <div class="wb-content-title">🖊️ タスクの新規登録</div>
+                <div class="input-group">
+                    <input type="text" id="new-task-title" placeholder="タスク名（例: ネーム修正）">
+                    <input type="date" id="new-task-date">
+                    <button onclick="addTask()">ボードに書き込む</button>
+                </div>
+            </div>
+
+            <div id="page-income" class="page-content">
+                <div class="wb-content-title">🪙 今月の概算収入予測</div>
+                <div class="income-amount" id="total-income">¥0</div>
+                <p style="font-size:0.8rem; color:#666; margin-top:10px;">※登録された情報から自動算出しています。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="assistant-section">
+        <div class="assistant-avatar" id="assistant-img">
+            🧑‍🎨
+        </div>
         <div class="speech-bubble">
-            <h1 id="char-greeting-title">先生、おはようございます！</h1>
-            <p class="greeting" id="char-greeting-text">今日の予定を表示中...</p>
+            <h1 class="bubble-title" id="char-title">お待ちしていました、先生！</h1>
+            <p class="bubble-text" id="char-text">今日のやることリストをホワイトボードにまとめておきました！</p>
         </div>
-    </div>
-
-    <div class="card">
-        <div class="section-title">➕ 新しいタスクを追加</div>
-        <div class="input-group">
-            <input type="text" id="new-task-title" placeholder="例：第4話 ネーム作成">
-            <input type="date" id="new-task-date">
-            <button class="submit-btn" onclick="addTask()">タスクを登録する</button>
-        </div>
-    </div>
-
-    <div class="card" id="delayed-card" style="border-left: 6px solid var(--danger-color); display: none;">
-        <div class="section-title" style="color: var(--danger-color);">⚠️ 遅れているタスク</div>
-        <div id="delayed-list"></div>
-    </div>
-
-    <div class="card" style="border-left: 6px solid var(--primary-color);">
-        <div class="section-title" id="todo-section-title" style="color: var(--primary-color);">📅 本日のタスク</div>
-        <div id="today-list"></div>
     </div>
 
     <script>
-        // ※ JavaScriptのロジックは前回と同じ（安定して動作します）
-        let currentSelectedDate = "2026-06-18";
+        // 本日の日付（イラストに合わせて6/23に設定）
+        let currentSelectedDate = "2026-06-23";
+        
         let defaultTasks = [
-            { id: 1, title: "第3話 ネーム修正", deadline: "2026-06-16", status: "未完了" },
-            { id: 2, title: "第2話 ペン入れ", deadline: "2026-06-18", status: "未完了" }
+            { id: 1, title: "第3話 ネーム修正", deadline: "2026-06-21", status: "未完了" },
+            { id: 2, title: "背景のペン入れ（アシ指示）", deadline: "2026-06-23", status: "未完了" },
+            { id: 3, title: "担当氏とプロット打ち合わせ", deadline: "2026-06-23", status: "未完了" }
         ];
 
         function getTasks() {
-            const localData = localStorage.getItem('manga_tasks');
+            const localData = localStorage.getItem('manga_tasks_v5');
             return localData ? JSON.parse(localData) : defaultTasks;
+        }
+
+        // タブ切り替えロジック
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+
+            if (tabName === 'today') {
+                document.getElementById('tab-today').classList.add('active');
+                document.getElementById('page-today').classList.add('active');
+            } else if (tabName === 'new') {
+                document.getElementById('tab-new').classList.add('active');
+                document.getElementById('page-new').classList.add('active');
+            } else if (tabName === 'income') {
+                document.getElementById('tab-income').classList.add('active');
+                document.getElementById('page-income').classList.add('active');
+            }
+            renderApp();
         }
 
         function renderApp() {
             const tasks = getTasks();
-            document.getElementById('calendar-select').value = currentSelectedDate;
             document.getElementById('new-task-date').value = currentSelectedDate;
 
-            const dateObj = new Date(currentSelectedDate);
-            const formattedDate = `${dateObj.getMonth()+1}月${dateObj.getDate()}日`;
-            document.getElementById('todo-section-title').innerText = `📅 ${formattedDate} のタスク`;
-
-            const delayedCard = document.getElementById('delayed-card');
+            const delayedZone = document.getElementById('delayed-zone');
             const delayedList = document.getElementById('delayed-list');
             const todayList = document.getElementById('today-list');
             
-            const charGreetingTitle = document.getElementById('char-greeting-title');
-            const charGreetingText = document.getElementById('char-greeting-text');
+            const charTitle = document.getElementById('char-title');
+            const charText = document.getElementById('char-text');
 
             let delayedHTML = '';
             let todayHTML = '';
@@ -250,10 +324,10 @@
                             <div>
                                 <span class="todo-title">${task.title}</span><br>
                                 <span class="badge ${task.deadline < currentSelectedDate ? 'delayed' : 'today'}">
-                                    締切: ${task.deadline}
+                                    ${task.deadline < currentSelectedDate ? '遅延' : '本日締切'}
                                 </span>
                             </div>
-                            <button class="complete-btn" onclick="completeTask(${task.id})">完了</button>
+                            <button class="complete-btn" onclick="completeTask(${task.id})">消去</button>
                         </div>
                     `;
 
@@ -267,33 +341,35 @@
                 }
             });
 
+            // 遅延表示
             if (delayedCount > 0) {
-                delayedCard.style.display = 'block';
+                delayedZone.style.display = 'block';
                 delayedList.innerHTML = delayedHTML;
             } else {
-                delayedCard.style.display = 'none';
+                delayedZone.style.display = 'none';
             }
 
-            todayList.innerHTML = todayHTML || '<p style="color:#666; font-size:0.9rem;">この日のタスクはありません。</p>';
+            todayList.innerHTML = todayHTML || '<p style="color:#666; font-size:0.85rem; padding:10px 0;">今日の予定はすべて完了しています！</p>';
 
+            // 💰 収入ダミー計算（タスク数に応じて変動させています）
+            const totalIncome = document.getElementById('total-income');
+            let mockIncome = 350000 + (tasks.filter(t => t.status === '完了').length * 50000);
+            totalIncome.innerText = `¥${mockIncome.toLocaleString()}`;
+
+            // 💬 アシスタントのセリフ切り替え
             if (delayedCount > 0) {
-                charGreetingTitle.innerText = "先生、スケジュールが…！";
-                charGreetingTitle.style.color = "var(--danger-color)";
-                charGreetingText.innerHTML = `遅れている原稿などが <span style="color:red; font-weight:bold;">${delayedCount}件</span> あります！先に終わらせちゃいましょう！`;
+                charTitle.innerText = "先生、ちょっとマズイです…！";
+                charTitle.style.color = "var(--danger-color)";
+                charText.innerHTML = `ホワイトボードの赤枠を見てください！遅れてるタスクが <span style="color:red; font-weight:bold;">${delayedCount}件</span> あります！`;
             } else if (todayCount > 0) {
-                charGreetingTitle.innerText = "原稿がんばりましょう！";
-                charGreetingTitle.style.color = "var(--text-color)";
-                charGreetingText.innerText = `${formattedDate} は ${todayCount} 件のタスクがあります。進捗はいかがですか？`;
+                charTitle.innerText = "今日も原稿がんばりましょう！";
+                charTitle.style.color = "initial";
+                charText.innerText = `本日締め切りのタスクが ${todayCount} 件あります。体調は大丈夫ですか？`;
             } else {
-                charGreetingTitle.innerText = "お疲れ様です、先生！";
-                charGreetingTitle.style.color = "var(--text-color)";
-                charGreetingText.innerText = `${formattedDate} は予定が空いています。ネームを練るか、ゆっくり休みましょう！`;
+                charTitle.innerText = "素晴らしい進捗です、先生！";
+                charTitle.style.color = "initial";
+                charText.innerText = "今日の予定は綺麗に片付いています！少しのんびりしますか？";
             }
-        }
-
-        function changeDate() {
-            currentSelectedDate = document.getElementById('calendar-select').value;
-            renderApp();
         }
 
         function addTask() {
@@ -301,22 +377,22 @@
             const dateInput = document.getElementById('new-task-date');
 
             if (!titleInput.value) {
-                alert('タスク名を入力してください！');
+                alert('タスクを入力してください！');
                 return;
             }
 
             const tasks = getTasks();
-            const newTask = {
+            tasks.push({
                 id: Date.now(),
                 title: titleInput.value,
                 deadline: dateInput.value,
                 status: "未完了"
-            };
-
-            tasks.push(newTask);
-            localStorage.setItem('manga_tasks', JSON.stringify(tasks));
+            });
+            localStorage.setItem('manga_tasks_v5', JSON.stringify(tasks));
             titleInput.value = '';
-            renderApp();
+            
+            // 入力したら自動で「今日のタスク」タブに戻る
+            switchTab('today');
         }
 
         function completeTask(id) {
@@ -325,7 +401,7 @@
                 if (task.id === id) task.status = "完了";
                 return task;
             });
-            localStorage.setItem('manga_tasks', JSON.stringify(tasks));
+            localStorage.setItem('manga_tasks_v5', JSON.stringify(tasks));
             renderApp();
         }
 
